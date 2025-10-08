@@ -1,33 +1,39 @@
-/* ---- App container ---- */
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#root {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+/* -------- Card -------- */
 .card {
   width: min(720px, 92vw);
-  background: var(--bg-soft);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
 }
 
-/* ---- Headings ---- */
 .card h1 {
-  margin: 0 0 0.5rem;
-  font-size: 1.4rem;
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
 }
 
-.card h2 {
-  margin: 1rem 0 0.5rem;
-  font-size: 1.1rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-/* ---- Form ---- */
+/* -------- Form -------- */
 .card form {
   display: grid;
   gap: 0.75rem;
 }
 
-.card form input[type="text"] {
+.card input[type="text"] {
   width: 100%;
   padding: 0.7rem 0.9rem;
   border: 1px solid var(--border);
@@ -43,7 +49,7 @@
   flex-wrap: wrap;
 }
 
-/* Primary button */
+/* Buttons */
 .card button {
   padding: 0.55rem 0.9rem;
   border-radius: 10px;
@@ -61,73 +67,19 @@
   box-shadow: 0 2px 10px rgba(79,124,255,0.25);
 }
 
-/* Secondary button */
-.card button.secondary {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-  box-shadow: none;
-}
-
-/* ---- Suggestions list (city matches) ---- */
-.suggestions {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* -------- Output -------- */
+.card pre {
+  margin: 0.75rem 0 0;
+  padding: 0.9rem;
+  background: rgba(0,0,0,0.15);
   border: 1px solid var(--border);
   border-radius: 10px;
-  overflow: hidden;
-}
-.suggestions li {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-.suggestions li:last-child { border-bottom: none; }
-.suggestions li:hover {
-  /* Subtle hover using your theme colors (fallback for older browsers shown) */
-  background: rgba(79,124,255,0.12);
-  background: color-mix(in oklab, var(--accent) 16%, var(--bg-soft));
+  white-space: pre-wrap;       /* wrap long lines (you also set inline) */
+  word-break: break-word;
+  color: var(--text);
 }
 
-/* ---- Forecast list ---- */
-.forecast {
-  display: grid;
-  gap: 0.6rem;
-  margin-top: 0.25rem;
-}
-
-.period {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.75rem;
-}
-
-.period .title {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-  font-weight: 700;
-}
-
-.period .meta {
-  margin-top: 0.15rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-/* ---- Helper / states ---- */
-.helper {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.loading {
-  margin-top: 0.5rem;
-  color: var(--muted);
-}
-
-.error {
-  margin-top: 0.5rem;
-  color: #ff8a8a;
-}
+/* Optional helper states (if you ever use these classes) */
+.helper { color: var(--muted); font-size: 0.85rem; }
+.loading { color: var(--muted); }
+.error { color: #ff8a8a; }

@@ -1,74 +1,50 @@
 import { useState } from "react";
 import "./App.css";
+import { geocodePlace, getCurrentConditions } from "./api";
 
 export default function App() {
   const [q, setQ] = useState("");
   const [out, setOut] = useState("Type a city (e.g., Seattle) or lat,lon (e.g., 34.05,-118.25).");
 
+  function parseLatLon(text) {
+    const m = text.trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
+    return m ? { lat: parseFloat(m[1]), lon: parseFloat(m[2]) } : null;
+  }
+
   async function getWeather(e) {
     e.preventDefault();
     setOut("Loading…");
-
     try {
-      // 0) turn input into lat/lon (accepts "lat,lon" or a city/ZIP via simple geocoder)
+      // 1) Resolve input to lat/lon
       let lat, lon, label;
-      const m = q.trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
-      if (m) {
-        lat = parseFloat(m[1]); lon = parseFloat(m[2]); label = `Lat ${lat.toFixed(3)}, Lon ${lon.toFixed(3)}`;
+      const ll = parseLatLon(q);
+      if (ll) {
+        ({ lat, lon } = ll);
+        label = `Lat ${lat.toFixed(3)}, Lon ${lon.toFixed(3)}`;
       } else {
-        const g = await fetch(
-          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1`
-        ).then(r => r.json());
-        if (!g.results || g.results.length === 0) throw new Error("Place not found");
-        lat = g.results[0].latitude; lon = g.results[0].longitude;
-        label = [g.results[0].name, g.results[0].admin1, g.results[0].country_code].filter(Boolean).join(", ");
+        const g = await geocodePlace(q);
+        lat = g.lat; lon = g.lon; label = g.label;
       }
 
-      // required by weather.gov
-      const HEADERS = {
-        "User-Agent": "dougspaeth-weather-demo (doug@example.com)",
-        Accept: "application/geo+json",
-      };
-
-      // 1) get NWS point info (to discover nearby stations and a nice city/state)
-      const p = await fetch(`https://api.weather.gov/points/${lat},${lon}`, { headers: HEADERS }).then(r => r.json());
-      const rel = p?.properties?.relativeLocation?.properties;
-      if (rel) label = `${rel.city}, ${rel.state}`;
-      const stationsUrl = p?.properties?.observationStations;
-      if (!stationsUrl) throw new Error("No stations for that point");
-
-      // 2) pick the nearest station
-      const s = await fetch(stationsUrl, { headers: HEADERS }).then(r => r.json());
-      const stationId = s?.features?.[0]?.properties?.stationIdentifier;
-      if (!stationId) throw new Error("No nearby station found");
-
-      // 3) fetch latest observation (current conditions)
-      const obs = await fetch(
-        `https://api.weather.gov/stations/${stationId}/observations/latest`,
-        { headers: HEADERS }
-      ).then(r => r.json());
-
-      const o = obs?.properties;
-      if (!o) throw new Error("No observation data");
+      // 2) Use API module to get current conditions
+      const { label: pretty, obs } = await getCurrentConditions(lat, lon, label);
+      if (!obs) throw new Error("No observation data");
 
       // tiny format helpers
       const num = (x) => (x && typeof x.value === "number" ? x.value : null);
-      const tempC = num(o.temperature);
-      const tempF = tempC == null ? "—" : Math.round((tempC * 9) / 5 + 32) + "°F";
-      const feelsC = num(o.apparentTemperature);
-      const feelsF = feelsC == null ? "—" : Math.round((feelsC * 9) / 5 + 32) + "°F";
-      const rh = num(o.relativeHumidity);
-      const windMps = num(o.windSpeed);
+      const c2f = (c) => (c == null ? null : Math.round((c * 9) / 5 + 32));
+      const temp = c2f(num(obs.temperature));
+      const feels = c2f(num(obs.apparentTemperature));
+      const rh = num(obs.relativeHumidity);
+      const windMps = num(obs.windSpeed);
       const windMph = windMps == null ? "—" : Math.round(windMps * 2.23694) + " mph";
-      const desc = o.textDescription || "—";
-      const when = o.timestamp ? new Date(o.timestamp).toLocaleString() : "—";
 
       setOut(
-        `${label}\n` +
-        `Now: ${desc}\n` +
-        `Temp: ${tempF} · Feels like: ${feelsF}\n` +
+        `${pretty}\n` +
+        `Now: ${obs.textDescription || "—"}\n` +
+        `Temp: ${temp == null ? "—" : temp + "°F"} · Feels like: ${feels == null ? "—" : feels + "°F"}\n` +
         `Humidity: ${rh == null ? "—" : Math.round(rh) + "%"} · Wind: ${windMph}\n` +
-        `Updated: ${when}`
+        `Updated: ${obs.timestamp ? new Date(obs.timestamp).toLocaleString() : "—"}`
       );
     } catch (err) {
       setOut(`Error: ${err.message || String(err)}`);
