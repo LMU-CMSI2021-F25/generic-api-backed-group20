@@ -1,68 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
+
+/* Theme variables + global font */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  --bg: #0f1115;
+  --panel: #161a24;
+  --text: #e8e8e8;
+  --muted: #a6adbb;
+  --border: #2b3142;
+  --accent: #4f7cff;
+  --accent-press: #3a63d8;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw + 12px, 18px);
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+    --bg: #f6f8fc;
+    --panel: #ffffff;
+    --text: #0e1116;
+    --muted: #4b5565;
+    --border: #d7dee9;
+    --accent: #3b6cff;
+    --accent-press: #2f57cf;
   }
 }
+
+/* Make sure the gradient fills the screen */
+html, body, #root { min-height: 100vh; }
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: center;
+
+  /* Strong, visible gradient */
+  background:
+    radial-gradient(700px 500px at 30% 10%, rgba(79,124,255,0.35), transparent 55%),
+    radial-gradient(900px 600px at 90% 0%, rgba(79,124,255,0.22), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  min-height: 100svh;
+}
+
+/* (Optional) keep a couple of useful base styles */
+button { font-family: inherit; }

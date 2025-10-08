@@ -20,23 +20,37 @@ body {
   border-radius: 14px;
   padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  width: 100%;
+  max-width: min(900px, 92vw);        
+  padding: clamp(16px, 3vw, 28px);    
+  border-radius: clamp(10px, 2vw, 16px);
 }
 
 .card h1 {
   margin: 0 0 0.75rem;
   font-size: 1.25rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+  line-height: 1.2;
+}
+
+.card img {
+  max-width: min(220px, 40vw);  
+  height: auto;
+  display: block;
 }
 
 /* -------- Form -------- */
 .card form {
   display: grid;
-  gap: 0.75rem;
+  gap: clamp(10px, 2vw, 14px);
 }
+
 
 .card input[type="text"] {
   width: 100%;
-  padding: 0.7rem 0.9rem;
+  padding: 0.45rem 0.2rem;
   border: 1px solid var(--border);
+  /* font-size: 0.95rem; */
   border-radius: 10px;
   background: transparent;
   color: var(--text);
