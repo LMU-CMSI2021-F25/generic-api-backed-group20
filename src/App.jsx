@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { geocodePlace, getCurrentConditions } from "./api";
 
+
 export default function App() {
   const [q, setQ] = useState("");
   const [out, setOut] = useState("Type a city (e.g., Seattle) or lat,lon (e.g., 34.05,-118.25).");
@@ -54,6 +55,7 @@ export default function App() {
   return (
     <div className="card">
       <h1>Current Weather (NWS)</h1>
+      <img src="/weather.png" alt="Weather icon" width="120" height="120" />
       <form onSubmit={getWeather}>
         <input
           type="text"
