@@ -5,13 +5,13 @@ import { geocodePlace, getCurrentConditions } from "./api";
 
 export default function App() {
   const [q, setQ] = useState("");
-  const [out, setOut] = useState("Type a city (e.g., Seattle) or lat,lon (e.g., 34.05,-118.25).");
+  const [out, setOut] = useState("Type a city (e.g., Seattle) or latitude,longitude (e.g., 34.05,-118.25).");
 
   function parseLatLon(text) {
     const m = text.trim().match(/^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/);
     return m ? { lat: parseFloat(m[1]), lon: parseFloat(m[2]) } : null;
   }
-
+ 
   async function getWeather(e) {
     e.preventDefault();
     setOut("Loading…");
@@ -59,7 +59,7 @@ export default function App() {
       <form onSubmit={getWeather}>
         <input
           type="text"
-          placeholder='City or "lat,lon"'
+          placeholder='City or "latitude,longitude"'
           value={q}
           onChange={(e) => setQ(e.target.value)}
           aria-label="Location"
